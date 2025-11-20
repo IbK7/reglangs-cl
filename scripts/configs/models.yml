@@ -1,0 +1,21 @@
+# Fix the model parameters for the RNN, LSTM, and TransformerEncoder
+model_params:
+  RNN:
+    hidden_size: 256
+    dropout: 0.0
+    nonlinearity: "tanh"
+    output_activation: "None"
+    batch_size: 128
+    lr: 0.0001
+    scheduler: "None" # None, Linear
+    loss_fn: "mse" # or cross-entropy
+    weight_init: "kaiming_uniform" # kaiming_normal, kaiming_uniform, xavier_normal, xavier_uniform or default
+  LSTM:
+    hidden_size: 256
+    dropout: 0.0
+    output_activation: "None"
+    batch_size: 128
+    lr: 0.0001
+    scheduler: "None" # None, Linear
+    loss_fn: "mse" # or cross-entropy
+    weight_init: "kaiming_uniform" # kaiming_normal, kaiming_uniform, xavier_normal, xavier_uniform or default

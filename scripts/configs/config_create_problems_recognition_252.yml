@@ -1,0 +1,48 @@
+save_folder:
+  "uniform-length_252-Recognition_42"
+
+problem:
+  "recognition"
+
+sampling:
+  "uniform-length"
+
+problem_file:
+  None
+
+parallel:
+  False
+
+n_jobs:
+  3
+
+symbols:
+  - "a"
+  - "b"
+
+ratio_max_connectivity: 1
+
+ratio_final_states: 0.5
+
+ratio_max_path: 0.5
+
+num_states: 5
+
+#final_states:
+#  [0, 1, 2, 3, 4]
+
+dataset:
+  # expects total number of samples, usually 20,000,000
+  training_set_size:
+    20_000_000
+  # expects samples per length, usually 100
+  unseen_batch_size:
+    10
+  max_train_length:
+    40
+  max_length:
+    500
+  num_problems:
+    1
+  seed:
+    42

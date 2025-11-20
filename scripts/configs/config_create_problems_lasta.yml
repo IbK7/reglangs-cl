@@ -1,0 +1,35 @@
+save_folder:
+  "uniform-length_LastA_42"
+
+problem:
+    "lasta"
+
+sampling:
+    "uniform-length"
+
+problem_file:
+  "lasta.yml"
+
+parallel:
+  False
+
+n_jobs:
+  20
+
+dataset:
+  # expects total number of samples, usually 20,000,000
+  training_set_size:
+    20_000_000
+  # expects samples per length, usually 100
+  unseen_batch_size:
+    10
+  max_train_length:
+    40
+  max_length:
+    500
+  num_problems:
+    1
+  seed:
+    42
+
+

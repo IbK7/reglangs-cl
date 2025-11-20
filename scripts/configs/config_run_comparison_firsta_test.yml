@@ -1,0 +1,70 @@
+dataset_folder:
+  'FirstA_42'
+
+experiment_id_prefix:
+  'Test'
+
+seed:
+  48
+
+parallel:
+  False
+
+device:
+  "cuda"
+
+n_jobs:
+  1
+
+load_dataset: # if False, the batches are generated on the fly, otherwise the dataset is loaded from the given path
+  True
+
+strategies:
+  - "single"
+  - "curr"
+  - "uniform"
+  - "no-curr"
+  - "anti"
+
+# number of different seeds tested, used for model initialisation
+n_model_seeds:
+  1
+
+n_data_seeds:
+  1
+
+n_folds:
+  1
+
+save_datasets:
+  False
+
+metric:
+  "length"  # either length or states
+
+params:
+  run_dir: None
+  models:
+    - "RNN"
+    - "LSTM"
+#    - "TransformerEncoder"
+  num_updates : 10000
+  epoch_train_size: 32000 # also the interval in which training acc/loss is calculated; should not be too high
+  model_params:
+    input_size: 2
+    output_size: 2
+  eval_every_n_batches: 100
+  eval_batch_size: 1024
+  num_buckets: 20
+  bucket_sizes: None # (num_updates / num_buckets) * batch_size
+
+  compute_training_metrics: False
+  pack_sequences: True  # if True, uses PackedSequence for RNN training
+  early_stopping: False
+  training_strategy: None  # choose from implemented_strategies
+  exclusive:
+    - True
+  continue_with_best:
+    - False
+  verbosity: 0
+

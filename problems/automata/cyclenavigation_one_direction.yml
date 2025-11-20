@@ -1,0 +1,15 @@
+# i(ncrease), d(ecrease), s(tay)
+edge_values:
+  (0, 1): i
+  (1, 2): i
+  (2, 3): i
+  (3, 4): i
+  (4, 0): i
+  (0, 0): s
+  (1, 1): s
+  (2, 2): s
+  (3, 3): s
+  (4, 4): s
+
+final_states:
+  [0, 1, 2, 3, 4]

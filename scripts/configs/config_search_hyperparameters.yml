@@ -1,0 +1,92 @@
+datasets_path:
+  "/home/mlai21/share/experiments/chomsky/data/"
+
+base_path:
+  "/home/mlai51/toborek/results/chomsky_curriculum/"
+
+search:
+  "random"
+
+problem:
+  "cyclenavigation"
+
+experiment_id:
+  'gen2CycleNavigation'
+
+seed:
+  48
+
+parallel:
+  True
+
+device:
+  "cuda"
+
+n_jobs:
+  3
+
+strategies:
+#  - "handcrafted"
+#  - "random-baseline"
+#  - "curr"
+  - "no-curr"
+#  - "anti"
+#  - "anti-curr-compression"
+#  - "curr-compression"
+#  - "mid"
+
+# number of different seeds tested, used for model initialisation
+run_number:
+  5
+
+n_folds:
+  1
+
+save_datasets:
+  False
+
+search_space:
+  training_lr:
+    - 0.0001
+    - 0.0003
+    - 0.0005
+    - 0.00005
+
+params:
+  run_dir: None
+  models:
+    - "RNN"
+    - "LSTM"
+  num_updates : 1000000
+  epoch_train_size: 32000 # also the interval in which training acc/loss is calculated; should not be too high
+  model_input_size: 3
+  model_hidden_size: 256
+  model_output_size: 5
+  model_dropout: 0.0
+  training_num_epochs: None # bucket_sizes / epoch_train_size
+  training_batch_size: 64
+  training_lr: 0.0001
+
+  num_buckets: 10
+  bucket_sizes: None # (num_updates / num_buckets) * batch_size
+  validate_on_the_fly: True
+  validation_size: 10000
+
+  early_stopping: False
+  train_val_split: 0.8
+  training_strategy: None  # choose from implemented_strategies
+  exclusive:
+    - True
+  continue_with_best:
+    - True
+  unseen_per_bucket: True
+  val_per_bucket: False # if True, val loss and acc are calculated on the entire val set, not just the subset with same length as the training set
+  val_on_test: True # if True, val loss and acc are calculated on the test set
+  val_on_unseen: True # if True, val loss and acc are calculated on the unseen set
+  training_subsampling: False # if between 0 and 1, training is performed with the given fraction of samples
+
+  max_input_length: 40
+  min_input_length: 1
+  max_unseen_length: 50
+  min_unseen_length: 41
+  verbosity: 0
