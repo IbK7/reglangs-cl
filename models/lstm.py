@@ -11,11 +11,12 @@ class LSTM(nn.LSTM):
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.fc = nn.Linear(hidden_size, output_size)
+        self.weight_init = weight_init
         self.output_activation = output_activation
         if self.weight_init != 'default':
-            self.reset_parameters()
+            self.my_reset_parameters()
 
-    def reset_parameters(self):
+    def my_reset_parameters(self):
         for name, param in self.named_parameters():
             if 'weight' in name:
                 if self.weight_init in ['kaiming_normal', 'he_normal']:
