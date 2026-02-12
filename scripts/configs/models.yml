@@ -19,3 +19,28 @@ model_params:
     scheduler: "None" # None, Linear
     loss_fn: "mse" # or cross-entropy
     weight_init: "kaiming_uniform" # kaiming_normal, kaiming_uniform, xavier_normal, xavier_uniform or default
+  TransformerEncoder:
+    hidden_size: 256
+    num_heads: 8
+    num_layers: 3
+    dropout: 0.1
+    output_activation: "None"
+    batch_size: 128
+    lr: 0.0001
+    scheduler: "None" # None, Linear
+    loss_fn: "mse" # or cross-entropy
+    weight_init: "kaiming_uniform" # kaiming_normal, kaiming_uniform, xavier_normal, xavier_uniform or default
+  BERT:
+    hidden_size: 256
+    num_heads: 8
+    num_layers: 6  # BERT typically uses more layers than vanilla Transformer
+    dropout: 0.1
+    output_activation: "None"
+    batch_size: 128
+    lr: 0.0001
+    scheduler: "None" # None, Linear
+    loss_fn: "mse" # or cross-entropy
+    weight_init: "kaiming_uniform" # kaiming_normal, kaiming_uniform, xavier_normal, xavier_uniform or default
+    use_embeddings: false  # Set to true if you want BERT-style token+position+segment embeddings
+    vocab_size: null  # Only needed if use_embeddings=true
+    max_len: 5000  # Maximum sequence length for positional embeddings

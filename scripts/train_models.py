@@ -1,3 +1,4 @@
+## train_models.py
 import os
 import sys
 import yaml
@@ -21,6 +22,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 from models.lstm import LSTM
 from models.rnn import RNN
+from models.transformer import Transformer
+from models.bert import BERT
 from problems.problem import RecognitionDataset
 from models.training import evaluate, set_training_paths, reset_to_checkpoint, train_one_greedy_batch, collect_results
 from utils.dataset import get_length2index_dict, select_samples_of_max_length, select_samples_of_min_length, \
@@ -33,8 +36,8 @@ implemented_strategies = ["no-curr", "curr", "anti", "single", "uniform"]
 verbosity_levels = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
 myrange = {0: range, 1: trange, 2: trange}
 # Dictionary to select the model
-select_model = {"RNN": RNN, "LSTM": LSTM}
-select_collate = {'RNN': collate_packed, 'LSTM': collate_packed} # 'CNN': collate_packed,
+select_model = {"RNN": RNN, "LSTM": LSTM, "TransformerEncoder": Transformer, "BERT": BERT}
+select_collate = {'RNN': collate_packed, 'LSTM': collate_packed, 'TransformerEncoder': collate_packed, 'BERT': collate_packed} # 'CNN': collate_packed,
 selection_function = {1: select_samples_of_max_length, -1: select_samples_of_min_length, 0: select_samples_of_max_length}
 
 
@@ -162,11 +165,14 @@ def train(base_path, data, params, model_params, config, device):
     with TorchRandomSeed(params.get("model_seed", params["seed"])):
         if params["model"] == "RNN":
             model = RNN(**{**model_params[params["model"]], **params["model_params"]})
+            model.flatten_parameters()
         elif params["model"] == "LSTM":
             model = LSTM(**{**model_params[params["model"]], **params["model_params"]})
-        #model = select_model[params["model"]](**{**model_params[params["model"]], **params["model_params"]})
-        if params["model"] not in ["TransformerEncoder"]:
             model.flatten_parameters()
+        elif params["model"] == "TransformerEncoder":
+            model = Transformer(**{**model_params[params["model"]], **params["model_params"]})
+        elif params["model"] == "BERT":
+            model = BERT(**{**model_params[params["model"]], **params["model_params"]})
         model.to(device)
 
     # Loss function and optimizer
@@ -195,7 +201,7 @@ def train(base_path, data, params, model_params, config, device):
     eval_batch_size = len(val_dataset) if params["eval_batch_size"] == -1 else min(params["eval_batch_size"], len(val_dataset))
     if params.get("model") == "CNN":
         eval_batch_size = len(val_dataset)
-    elif params.get("model") in ["TransformerEncoder"]:
+    elif params.get("model") in ["TransformerEncoder", "BERT"]:
         eval_batch_size = 8
 
     total_batches = 0

@@ -1,8 +1,9 @@
+# eval_hyper_search.py
 import csv
 from pathlib import Path
 
 import pandas as pd
-from defaultvalues import RESULT_PATH
+# from defaultvalues import RESULT_PATH
 
 def merge_experiment_files(path, model, problem):
     # merge all files together
@@ -360,14 +361,15 @@ def merge_best_hyperparameters(path, problems, num_fixed=1, model='rnn'):
 
 
 def main():
-    problems = ['even_pairs',  'parity_check', 'cycle_navigation']
-    path = Path("/home/florian/Documents/CodeProjectsGit/chomsky_curriculum/data/hyp_test")
+    problems = ['cycle_navigation_small']
+    path = Path("/home/iailab73/khanm2/reglangs-cl/results/transformer_hyperparameter_search")
 
-    for model in ['lstm', 'rnn']:
+    for model in ['transformer']:
         for problem in problems:
             experiment_type = f'{model}_{problem}'
-            merge_experiment_files(path, model, problem)
+            merge_experiment_files(path, "",  problem)
             evaluate_test_rnn(path, experiment_type, model)
+            # print(path)
         merge_best_hyperparameters(path, problems, num_fixed=1, model=model)
         merge_best_hyperparameters(path, problems, num_fixed=2, model=model)
         merge_best_hyperparameters(path, problems, num_fixed=3, model=model)

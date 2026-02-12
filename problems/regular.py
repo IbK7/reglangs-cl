@@ -13,7 +13,7 @@ import networkx as nx
 from PIL import Image
 from pathlib import Path
 from typing import Union
-import pygraphviz as pgv
+# import pygraphviz as pgv
 from itertools import product, groupby
 import torch.nn.functional as nn
 import torch.nn.utils.rnn as rnn_utils

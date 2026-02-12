@@ -1,3 +1,4 @@
+## run_companrisons.py
 import os
 import sys
 import copy
@@ -159,6 +160,9 @@ def create_experiment_id(config):
 @click.option('--metric', default=None, type=str)
 @click.option('--prefix', default=None, type=str)
 def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_seeds, num_gpus, models, max_input_length, metric, prefix):
+    # START TIMING HERE
+    start_time = time.time()
+    
     # get absolute python path
     absolute_path = os.path.dirname(os.path.abspath(__file__))
     # add config_file to the path
@@ -190,6 +194,12 @@ def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_s
     # get a list of all folders in the datasets directory as string
     problems = [str(x) for x in Path(config["datasets_path"]).iterdir() if x.is_dir()]
     problems = problems[0:config.get("num_problems", len(problems))]
+    
+    # DEBUG: Print what we found
+    print(f"Found {len(problems)} problems in {config['datasets_path']}")
+    if len(problems) == 0:
+        print(f"WARNING: No problem directories found!")
+        return
 
     # generate a list of seeds from the seed
     set_random_seeds(config["seed"])
@@ -203,6 +213,14 @@ def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_s
 
     # create experiment id based on parameters
     config['experiment_id'] = create_experiment_id(config)
+    
+    # DEBUG: Print configuration details
+    print(f"Strategies: {config['strategies']}")
+    print(f"Exclusive: {config['params'].get('exclusive', 'NOT SET')}")
+    print(f"Continue with best: {config['params'].get('continue_with_best', 'NOT SET')}")
+    print(f"Seeds: {seeds}")
+    print(f"Model seeds: {model_seeds}")
+    
     comparison_over = list(itertools.product(problems,
                                              config['strategies'],
                                              config['params']['exclusive'],
@@ -210,6 +228,11 @@ def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_s
                                              seeds,
                                              model_seeds
                                              ))
+    
+    print(f"Total experiments to run: {len(comparison_over)}")
+    if len(comparison_over) == 0:
+        print("ERROR: No experiments to run! Check your config file.")
+        return
 
     # create directory under Path(base_path) / config["experiment_id"] and save the config file
     parent_dir = Path(config["base_path"]) / config["experiment_id"]
@@ -217,7 +240,7 @@ def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_s
     print(f"##########\n##########\nStarting experiments for parent directory: {parent_dir}\n##########\n##########")
 
     list_of_processed_problems = []
-    if config["parallel"]:
+    if config.get("parallel", False):
         # parallelize the training over the problems using joblib,
         # joblib should wait for all processes to finish before starting the next iteration
         list_of_processed_problems = Parallel(n_jobs=config['n_jobs'])(
@@ -227,7 +250,8 @@ def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_s
             result = problem_run(p_id, p, config, model_config)
             list_of_processed_problems.append(result)
 
-    print(f"Time taken: {time.time() - start}")
+    # FIX: Use start_time defined at the beginning of main()
+    print(f"Time taken: {time.time() - start_time}")
     config["result_dirs"] = list_of_processed_problems
 
     config["params"].pop("train_data", None)
@@ -247,6 +271,5 @@ def main(config_file, strategies, num_buckets, num_updates, dataset, num_model_s
 
 
 if __name__ == "__main__":
-    # measure the time it takes to run the script
-    start = time.time()
+    # REMOVE: Don't define start here, it's defined inside main()
     main()

@@ -22,9 +22,11 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 @click.option('--root_dir', type=str, default=DATASET_PATH)
 def main(root_dir):
     # Traverse the root directory
+    print(root_dir)
     for dirpath, dirnames, filenames in os.walk(root_dir):
-        # Check if "dfa_strategy.json" exists in subdirectories
-        if dirpath != root_dir and ("dfa.json" not in filenames or "unseen_states2idx.pkl" not in filenames):
+    # Check if "dfa_strategy.json" exists in subdirectories
+    # the script (and "train_input.pt" in filenames) only processes leaf folders that already have the dataset files.
+        if dirpath != root_dir and "train_input.pt" in filenames and ("dfa.json" not in filenames or "unseen_states2idx.pkl" not in filenames):
             train_ins, train_outs, automaton = load_single_problem(dirpath)
             del train_outs
             dfa_path = os.path.join(dirpath, 'dfa.json')
@@ -54,4 +56,5 @@ def main(root_dir):
 
 
 if __name__ == '__main__':
+    print("Running dfa_strategy.json")
     main()

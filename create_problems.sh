@@ -2,9 +2,9 @@
 
 # activate conda
 eval "$(conda shell.bash hook)"
-conda activate chomsky
-export PYTHONPATH=/home/mlai21/share/code/chomsky_curriculum/
-export COMPUTERNAME=mlai_florian
+conda activate ../.conda/envs/myenv
+export PYTHONPATH=/home/iailab73/khanm2/reglangs-cl
+export COMPUTERNAME=iailab73
 
 # run the python scripts
 # parity check

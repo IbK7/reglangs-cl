@@ -512,7 +512,7 @@ def load_single_problem(save_dir, unseen=False, language_only=False):
         return train_ins, train_outs, language
 
 
-def filtered_load_problems(base_dir="/home/mlai32/toborek/datasets/RegularLanguages/", num_symbols=None,
+def filtered_load_problems(base_dir="/home/iailab73/khanm2/reglangs-cl/data/", num_symbols=None,
                            num_states=None, max_length=None, num_final_states=None, seed=None):
     """
     If called without any arguments, loads all the datasets in the data directory.

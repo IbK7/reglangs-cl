@@ -20,6 +20,10 @@ elif computer_name == "florian":
     PROJECT_PATH = Path("/home/florian/Documents/Code/reglangs-cl")
     DATASET_PATH = Path("/home/florian/Documents/Code/reglangs-cl/data")
     RESULT_PATH = Path('/home/florian/Documents/Code/reglangs-cl/results')
+elif computer_name == "iailab73":
+    PROJECT_PATH = Path("/home/iailab73/khanm2/reglangs-cl")
+    DATASET_PATH = Path("/home/iailab73/khanm2/reglangs-cl/data")
+    RESULT_PATH = Path('/home/iailab73/khanm2/reglangs-cl/results')
 else:
     raise ValueError("Computer name not recognized.")
 
