@@ -13,3 +13,5 @@ export COMPUTERNAME=iailab73
 # python tests/test_rnn.py --with_torch True --model rnn --threads 32
 
 python hyperparameter_search/hyper_search.py --with_torch True --model transformer --threads 32
+
+python scripts/find_best_result.py

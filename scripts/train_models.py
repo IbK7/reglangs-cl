@@ -22,7 +22,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 from models.lstm import LSTM
 from models.rnn import RNN
-from models.transformer import Transformer
+from models.transformer_relative import Transformer
 from models.bert import BERT
 from problems.problem import RecognitionDataset
 from models.training import evaluate, set_training_paths, reset_to_checkpoint, train_one_greedy_batch, collect_results
@@ -36,8 +36,8 @@ implemented_strategies = ["no-curr", "curr", "anti", "single", "uniform"]
 verbosity_levels = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
 myrange = {0: range, 1: trange, 2: trange}
 # Dictionary to select the model
-select_model = {"RNN": RNN, "LSTM": LSTM, "TransformerEncoder": Transformer, "BERT": BERT}
-select_collate = {'RNN': collate_packed, 'LSTM': collate_packed, 'TransformerEncoder': collate_packed, 'BERT': collate_packed} # 'CNN': collate_packed,
+select_model = {"RNN": RNN, "LSTM": LSTM, "TransformerEncoder": Transformer, "TransformerRelative": Transformer, "BERT": BERT}
+select_collate = {'RNN': collate_packed, 'LSTM': collate_packed, 'TransformerEncoder': collate_packed, "TransformerRelative": collate_packed, 'BERT': collate_packed} # 'CNN': collate_packed,
 selection_function = {1: select_samples_of_max_length, -1: select_samples_of_min_length, 0: select_samples_of_max_length}
 
 
@@ -171,6 +171,8 @@ def train(base_path, data, params, model_params, config, device):
             model.flatten_parameters()
         elif params["model"] == "TransformerEncoder":
             model = Transformer(**{**model_params[params["model"]], **params["model_params"]})
+        elif params["model"] == "TransformerRelative":
+            model = Transformer(**{**model_params[params["model"]], **params["model_params"]})
         elif params["model"] == "BERT":
             model = BERT(**{**model_params[params["model"]], **params["model_params"]})
         model.to(device)
@@ -201,7 +203,7 @@ def train(base_path, data, params, model_params, config, device):
     eval_batch_size = len(val_dataset) if params["eval_batch_size"] == -1 else min(params["eval_batch_size"], len(val_dataset))
     if params.get("model") == "CNN":
         eval_batch_size = len(val_dataset)
-    elif params.get("model") in ["TransformerEncoder", "BERT"]:
+    elif params.get("model") in ["TransformerEncoder", "TransformerRelative", "BERT"]:
         eval_batch_size = 8
 
     total_batches = 0
@@ -383,7 +385,7 @@ def train(base_path, data, params, model_params, config, device):
 
         # END OF LOOP OVER ONE BUCKET
         # copy best model to str(experiment_path / f"{bucket_id}-model.pt")
-        os.system(f"cp {best_model_path} {str(experiment_path / f'{bucket_id}-model.pt')}")
+        # os.system(f"cp {best_model_path} {str(experiment_path / f'{bucket_id}-model.pt')}")
         random_baseline = calculate_random_baseline_from_subset(bucket_dataset)
         results['random_baseline'].append(random_baseline)
         results['updates_per_bucket'].append(batch_idx + 1)
@@ -418,9 +420,10 @@ def train(base_path, data, params, model_params, config, device):
     # best model to final model
     os.system(f"cp {best_model_path} {str(experiment_path / 'final_model.pt')}")
 
-    total_train_loss = 0
-    total_train_acc = 0
-
+    # DELETE INTERMEDIATE CHECKPOINTS TO SAVE SPACE
+    if best_model_path.is_file():
+        os.remove(str(best_model_path))
+        logging.info(f"Deleted intermediate checkpoint: {best_model_path}")
     # load the final model
     final_checkpoint = torch.load(str(experiment_path / 'final_model.pt'))
     final_model = select_model[params["model"]](**model_params[params["model"]], **params["model_params"])

@@ -1,12 +1,12 @@
 import torch
-from transformer_relative import Transformer
+from models.transformer_relative import Transformer
 
 def compare_transformers():
     """Compare absolute vs relative positional encodings"""
     
     # Set up parameters
     batch_size = 4
-    seq_len = 10
+    seq_len = 15  # Make sequence longer to have room for outputs
     input_size = 20
     hidden_size = 64
     output_size = 10
@@ -15,7 +15,15 @@ def compare_transformers():
     
     # Create sample input
     x = torch.randn(batch_size, seq_len, input_size)
-    lengths = torch.tensor([10, 8, 6, 9])
+    
+    # Parameter explanation:
+    # - lengths[i]: position where input ends for batch element i
+    # - max_out_length: how many output positions to extract
+    # - out_lengths[i]: actual output length (for masking)
+    # The model extracts outputs from positions [lengths[i], lengths[i] + max_out_length)
+    # So we need: lengths[i] + max_out_length <= seq_len
+    
+    lengths = torch.tensor([5, 7, 4, 6])  # Leave room for 5 output positions
     out_lengths = torch.tensor([5, 5, 5, 5])
     max_out_length = 5
     
@@ -63,27 +71,27 @@ def compare_transformers():
     print(f"Output shape: {output_rel.shape}")
     print(f"Number of parameters: {sum(p.numel() for p in model_relative.parameters()):,}")
     
-    # 3. Key Differences
-    print("\n3. KEY DIFFERENCES")
-    print("-" * 80)
-    print("Absolute Positional Encoding:")
-    print("  - Adds sinusoidal position encodings to input embeddings")
-    print("  - Position information is fixed and added before attention")
-    print("  - Each position has the same encoding regardless of context")
+    # # 3. Key Differences
+    # print("\n3. KEY DIFFERENCES")
+    # print("-" * 80)
+    # print("Absolute Positional Encoding:")
+    # print("  - Adds sinusoidal position encodings to input embeddings")
+    # print("  - Position information is fixed and added before attention")
+    # print("  - Each position has the same encoding regardless of context")
     
-    print("\nRelative Positional Encoding (Transformer-XL):")
-    print("  - Incorporates position information INTO the attention mechanism")
-    print("  - Uses relative distances between positions (i-j) instead of absolute positions")
-    print("  - Includes learnable bias terms (u and v) for content and position")
-    print("  - More flexible for capturing positional relationships")
+    # print("\nRelative Positional Encoding (Transformer-XL):")
+    # print("  - Incorporates position information INTO the attention mechanism")
+    # print("  - Uses relative distances between positions (i-j) instead of absolute positions")
+    # print("  - Includes learnable bias terms (u and v) for content and position")
+    # print("  - More flexible for capturing positional relationships")
     
-    # 4. Performance Characteristics
-    print("\n4. EXPECTED BENEFITS OF RELATIVE POSITIONS")
-    print("-" * 80)
-    print("  • Better generalization to longer sequences than seen during training")
-    print("  • More interpretable attention patterns based on relative distances")
-    print("  • Can capture inductive biases about local vs distant relationships")
-    print("  • Often performs better on tasks where relative position matters more")
+    # # 4. Performance Characteristics
+    # print("\n4. EXPECTED BENEFITS OF RELATIVE POSITIONS")
+    # print("-" * 80)
+    # print("  • Better generalization to longer sequences than seen during training")
+    # print("  • More interpretable attention patterns based on relative distances")
+    # print("  • Can capture inductive biases about local vs distant relationships")
+    # print("  • Often performs better on tasks where relative position matters more")
     
     print("\n" + "=" * 80)
     print("Setup complete! You can now train and compare both models.")

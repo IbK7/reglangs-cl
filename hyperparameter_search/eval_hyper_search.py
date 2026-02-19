@@ -361,11 +361,12 @@ def merge_best_hyperparameters(path, problems, num_fixed=1, model='rnn'):
 
 
 def main():
-    problems = ['cycle_navigation_small']
+    problems = ['cycle_navigation']
     path = Path("/home/iailab73/khanm2/reglangs-cl/results/transformer_hyperparameter_search")
 
     for model in ['transformer']:
         for problem in problems:
+            print(problem)
             experiment_type = f'{model}_{problem}'
             merge_experiment_files(path, "",  problem)
             evaluate_test_rnn(path, experiment_type, model)

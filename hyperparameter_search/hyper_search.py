@@ -397,7 +397,7 @@ def train(with_torch=True, model='rnn', threads=30):
     learning_rate = [0.0001, 0.001]  
     output_activations = ['relu', 'tanh']  # Reduced from ['tanh', None, 'relu']
     loss_function = ['cross_entropy']  # Reduced from ['cross_entropy', 'mse']
-    problems = ['cycle_navigation_small', 'even_pairs']  
+    problems = ['cycle_navigation', 'even_pairs', 'first_a']#, 'first_last_a', 'bucket_sort']  
     
     if model == 'transformer':
         # Transformer-specific hyperparameters - REDUCED FOR TESTING

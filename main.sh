@@ -42,7 +42,7 @@ export COMPUTERNAME=iailab73
 # done
 
 
-python scripts/run_comparison.py --config_file scripts/configs/config_run_comparison_paritycheck.yml --models "BERT" --strategies "curr,no-curr" --num_buckets 20 --metric "length"
+python scripts/run_comparison.py --config_file scripts/configs/config_run_comparison_evenpairs.yml --models "TransformerRelative" --strategies "curr" --num_buckets 20 --metric "length"
 
 # python scripts/run_comparison.py --config_file scripts/configs/config_run_comparison_modarithmetic.yml --models "TransformerEncoder" --strategies "curr,no-curr" --num_buckets 20 --metric "length"
 
